@@ -1,4 +1,3 @@
-import json
 from pydantic import BaseModel
 import aiohttp
 from fastapi import FastAPI, HTTPException, Query, Path, status
@@ -54,7 +53,8 @@ async def post_data(url: str, payload: dict):
             json=payload,
             headers={"Content-type": "application/json"},
         )
-        return request
+        data = await request.json()
+        return data
 
 
 @app.get("/users", response_model=list[ResponseUser])
@@ -105,8 +105,22 @@ async def get_comments_by_user_id(
 
 @app.post("/create-post", response_model=CreatePostRequest)
 async def create_post(post_in: CreatePostRequest):
-    info = post_in.model_dump()
-    return await post_data("https://jsonplaceholder.typicode.com/posts", info)
+    post: dict = post_in.model_dump()
+    return await post_data("https://jsonplaceholder.typicode.com/posts", post)
+
+
+class CreateCommentResponse(BaseModel):
+    id: int
+    postId: int
+    name: str
+    email: str
+    body: str
+
+
+@app.post("/add-comment", response_model=CreateCommentResponse)
+async def create_comment(comment_in: CreateCommentResponse):
+    comment: dict = comment_in.model_dump()
+    return await post_data("https://jsonplaceholder.typicode.com/comments", comment)
 
 
 if __name__ == "__main__":
