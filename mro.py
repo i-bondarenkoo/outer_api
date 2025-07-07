@@ -45,10 +45,10 @@ class BatteryPowered:
 
 class SmartSensor(Device, NetworkEnabled, BatteryPowered):
     def __init__(self, brand, model, mac_address, battery_level, sensor_type):
-        Device.__init__(self, brand, model)
-        NetworkEnabled.__init__(self, mac_address)
-        BatteryPowered.__init__(self, battery_level)
-        self.sensor_type = sensor_type
+        # Device.__init__(self, brand, model)
+        # NetworkEnabled.__init__(self, mac_address)
+        # BatteryPowered.__init__(self, battery_level)
+        # self.sensor_type = sensor_type
         super().__init__(
             brand=brand,
             model=model,
