@@ -59,9 +59,9 @@ class SmartSensor(Device, NetworkEnabled, BatteryPowered):
 
 
 # print(SmartSensor.__mro__)
-# d = Device("Apple", "HT-802")
-# d.register()
-# print(Device.print_registry())
+d = Device("Apple", "HT-802")
+d.register()
+print(Device.print_registry())
 smart = SmartSensor("Xiaomi", "HT404", "aa:bb:cc:dd:55:22:32:44", 15, "сенсорный")
 smart2 = SmartSensor("Xiaomi", "HT405", "aa:bb:cc:dd:55:22:32:44", 15, "сенсорный")
 print(smart.status())
