@@ -1,66 +1,71 @@
 class Device:
 
-    all_devices = []
+    all_devices: list = []
 
-    def __init__(self, brand: str, model: str):
+    def __init__(self, brand: str, model: str, **kwargs):
         self.brand = brand
         self.model = model
+        super().__init__(**kwargs)
 
-    def register(self, value):
-        if not isinstance(value, Device):
-            raise ValueError("Передан неправильный объект")
-        Device.all_devices.append(value)
+    def register(self):
+        Device.all_devices.append(self)
         return f"Объект добавлен в список"
+
+    def __str__(self):
+        return f"{self.brand} {self.model}"
+
+    @classmethod
+    def print_registry(cls):
+        return "\n".join(str(device) for device in cls.all_devices)
 
 
 class NetworkEnabled:
-    def __init__(self, mac_address: str):
+    def __init__(self, mac_address: str, **kwargs):
         self.mac_address = mac_address
+        super().__init__(**kwargs)
 
     def connect(self):
-        return f"Устройство успешно подключилось к сети"
+        return f"Устройство с mac-адресом {self.mac_address} успешно подключено"
+
+    def __str__(self):
+        return f"{self.mac_address}"
 
 
 class BatteryPowered:
-    def __init__(self, battery_level: int):
+    def __init__(self, battery_level: int, **kwargs):
         self.battery_level = battery_level
+        super().__init__(**kwargs)
 
-    def battery_status(self):
-        return f"Заряд батареи - {self.battery_level}"
+    def status(self):
+        return f"Заряд батареи составляет - {self.battery_level}%"
 
-
-class SmartLight(Device, NetworkEnabled):
-    def __init__(self, brand, model, mac_address, is_on=True):
-        Device.__init__(self, brand=brand, model=model)
-        NetworkEnabled.__init__(self, mac_address=mac_address)
-        self.is_on = True
-
-    def toggle(self):
-        if self.is_on == True:
-            self.is_on = False
-            return f"Лампа выключена"
-        else:
-            self.is_on == True
-            return f"Лампочка включена"
+    def __str__(self):
+        return f"{self.battery_level}%"
 
 
-class SmartVacuum(Device, NetworkEnabled, BatteryPowered):
-    def __init__(self, brand, model, mac_address, battery_level):
-        Device.__init__(self, brand=brand, model=model)
-        NetworkEnabled.__init__(self, mac_address=mac_address)
-        BatteryPowered.__init__(self, battery_level=battery_level)
+class SmartSensor(Device, NetworkEnabled, BatteryPowered):
+    def __init__(self, brand, model, mac_address, battery_level, sensor_type):
+        # Device.__init__(self, brand, model)
+        # NetworkEnabled.__init__(self, mac_address)
+        # BatteryPowered.__init__(self, battery_level)
+        # self.sensor_type = sensor_type
+        super().__init__(
+            brand=brand,
+            model=model,
+            mac_address=mac_address,
+            battery_level=battery_level,
+        )
+        self.sensor_type = sensor_type
 
-    def clean(self):
-        if self.battery_level > 10:
-            self.battery_level -= 10
-            return f"Запущена уборка, состояние батареи {self.battery_level}"
-        else:
-            return f"Слишком мало заряда, невозможно начать уборку"
 
-
-print(SmartLight.__mro__)
-print(SmartVacuum.__mro__)
-smart_l = SmartLight("Xiaomi", "g-123", "aa:bb:cc:dd:11:23:43:44")
-device1 = Device("Apple", "f-15")
-Device.register(device1)
-print(Device.all_devices)
+# print(SmartSensor.__mro__)
+# d = Device("Apple", "HT-802")
+# d.register()
+# print(Device.print_registry())
+smart = SmartSensor("Xiaomi", "HT404", "aa:bb:cc:dd:55:22:32:44", 15, "сенсорный")
+smart2 = SmartSensor("Xiaomi", "HT405", "aa:bb:cc:dd:55:22:32:44", 15, "сенсорный")
+print(smart.status())
+print(smart.connect())
+smart.register()
+smart2.register()
+print(Device.print_registry())
